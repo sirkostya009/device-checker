@@ -10,22 +10,143 @@
     <button id="fileButton" class="hover:bg-gray-200 px-1.5" onclick="fileDropdown.toggleAttribute('hidden')">Файл</button>
 
     <div id="fileDropdown" class="absolute bg-[#fff] z-10 h-auto w-[140px]" hidden>
-      <button class="hover:bg-gray-200 px-1.5 w-full">Експорт CSV</button>
+      <button class="hover:bg-gray-200 px-1.5 w-full text-left" onclick="downloadInfo(main.innerText)">Експорт</button>
     </div>
 
-    <button id="infoButton" class="hover:bg-gray-200 px-1.5">Інформація</button>
+    <button id="infoButton" class="hover:bg-gray-200 px-1.5" onclick="openInfo()">Інформація</button>
   </div>
 
-  <div class="w-screen space-x-1">
-    <button class="p-2 transition-colors duration-300 text-white hover:text-[#eee]">
-      <svg width="36" height="36" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4Z" fill="currentColor" />
-        <path fill-rule="evenodd" clip-rule="evenodd" d="M13 7C13 6.44772 12.5523 6 12 6C11.4477 6 11 6.44772 11 7V11H7C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13H11V17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17V13H17C17.5523 13 18 12.5523 18 12C18 11.4477 17.5523 11 17 11H13V7Z" fill="currentColor" />
+  <div class="w-full space-x-1 bg-[#aaa]">
+    <button class="p-2 transition-colors duration-300 text-white hover:text-[#eee]" onclick="downloadInfo(main.innerText)">
+      <svg height="36" width="36" xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="9.37 9.37 493.27 493.27"><path d="M380.93 57.37A32 32 0 00358.3 48H94.22A46.21 46.21 0 0048 94.22v323.56A46.21 46.21 0 0094.22 464h323.56A46.36 46.36 0 00464 417.78V153.7a32 32 0 00-9.37-22.63zM256 416a64 64 0 1164-64 63.92 63.92 0 01-64 64zm48-224H112a16 16 0 01-16-16v-64a16 16 0 0116-16h192a16 16 0 0116 16v64a16 16 0 01-16 16z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"></path>
       </svg>
     </button>
   </div>
+
+  <main id="main" class="grid grid-cols-1 gap-y-3 divide-y w-[90%] mt-10">
+    <details class="group py-1 text-lg">
+      <summary class="flex items-center justify-between py-1 font-semibold text-gray-800 cursor-pointer select-none focus:outline-none appearance-none">
+        <span class="flex items-center justify-between w-full">
+          ЦП
+          <svg class="h-6 w-6 rotate-0 transform text-gray-400 group-open:rotate-180 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </span>
+      </summary>
+
+      <span id="cpuload"></span>
+      <div>
+        Кі-сть ядер: 
+        <span id="cpucores" class="font-semibold">8</span>
+      </div>
+      <div>
+        Кі-сть потоків:
+        <span id="cputhreads" class="font-semibold">16</span>
+      </div>
+      <div>
+        Базова частота:
+        <span id="cpuspeed" class="font-semibold">3200</span>
+      </div>
+      <div>
+        L1 кеш:
+        <span id="cpucache" class="font-semibold">334</span>
+      </div>
+      <div>
+        Виробник:
+        <span id="cpumanufacturer" class="font-semibold">AMD</span>
+      </div>
+      <div>
+        Назва:
+        <span id="cpuname" class="font-semibold">Ryzen 7</span>
+      </div>
+    </details>
+
+    <details class="group py-1 text-lg">
+      <summary class="flex cursor-pointer flex-row items-center justify-between py-1 font-semibold text-gray-800 marker:[font-size:0px] select-none focus:outline-none appearance-none">
+        <span class="flex items-center justify-between w-full">
+          Пам'ять
+          <svg class="h-6 w-6 rotate-0 transform text-gray-400 group-open:rotate-180 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </span>
+      </summary>
+
+      <div>
+        Загальна кількість пам'яті:
+        <span id="ramamount" class="font-semibold">16gb</span>
+      </div>
+      <div id="ramblock" class="grid grid-cols-2">
+      </div>
+    </details>
+
+    <details class="group py-1 text-lg">
+      <summary class="flex cursor-pointer flex-row items-center justify-between py-1 font-semibold text-gray-800 marker:[font-size:0px] select-none focus:outline-none appearance-none">
+        <span class="flex items-center justify-between w-full">
+          Температури
+          <svg class="h-6 w-6 rotate-0 transform text-gray-400 group-open:rotate-180 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </span>
+      </summary>
+
+      <div>
+        Температура процесора:
+        <span id="cputemp" class="font-semibold">
+          0 c°
+        </span>
+      </div>
+    </details>
+
+    <details class="group py-1 text-lg">
+      <summary class="flex cursor-pointer flex-row items-center justify-between py-1 font-semibold text-gray-800 marker:[font-size:0px] select-none focus:outline-none appearance-none">
+        <span class="flex items-center justify-between w-full">
+          Диск
+          <svg class="h-6 w-6 rotate-0 transform text-gray-400 group-open:rotate-180 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </span>
+      </summary>
+
+      <table class="table-auto w-full">
+        <thead class="">
+          <tr class="text-left border-b border-gray-950">
+            <th>Модель</th>
+            <th>Серійний номер</th>
+            <th>Розмір</th>
+            <th>Вендор</th>
+          </tr>
+        </thead>
+        <tbody id="diskblock">
+        </tbody>
+      </table>
+    </details> 
+  </main>
+
+  <section class="bg-white mt-auto w-full bottom-0 left-0">
+    <p id="status">Моніторимо</p>
+  </section>
 </body>
 
 <script>
   addEventListener('click', (e) => e.target.id !== 'fileButton' && fileDropdown.setAttribute('hidden', ''));
+
+  function addMemoryModule(total, vendor, name, hz, model, i) {
+    const memory = document.createElement('span');
+    memory.innerText = `Модуль ${i}: ${total}MB ${vendor} ${name} ${hz} ${model}`;
+    ramblock.appendChild(memory);
+  }
+
+  function addDisk(model, serial, size, vendor, i) {
+    const disk = document.createElement('tr');
+    disk.className = `border-b border-gray-950`;
+    disk.innerHTML = `
+      <td>${model}</td>
+      <td>${serial}</td>
+      <td>${size}</td>
+      <td>${vendor}</td>
+    `;
+    diskblock.appendChild(disk);
+  }
+
+  setInterval(() => cputemp.innerText = `${getCpuTemp()}°C`, 2000);
 </script>
