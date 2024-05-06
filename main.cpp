@@ -66,7 +66,7 @@ class Info : public ul::WindowListener, public ul::LoadListener, public ul::View
     std::function<void()> onClose;
 public:
     Info(ul::Monitor* monitor, std::function<void()> onClose)
-    : window{ ul::Window::Create(monitor, 640, 520, false, ul::kWindowFlags_Resizable | ul::kWindowFlags_Maximizable) }
+    : window{ ul::Window::Create(monitor, 640, 560, false, ul::kWindowFlags_Titled) }
     , overlay{ ul::Overlay::Create(window, 1, 1, 0, 0) }
     , onClose{ std::move(onClose) }
     {
@@ -76,7 +76,8 @@ public:
 
         window->MoveToCenter();
         overlay->Resize(window->width(), window->height());
-        overlay->view()->LoadURL("file:///info.html");
+#include "resources/info.inl"
+        overlay->view()->LoadHTML((char*)rawData);
         overlay->Focus();
     }
 
@@ -133,7 +134,8 @@ public:
 
         window->MoveToCenter();
         overlay->Resize(window->width(), window->height());
-        overlay->view()->LoadURL("file:///app.html");
+#include "resources/app.inl"
+        overlay->view()->LoadHTML((char*)rawData);
         overlay->Focus();
     }
 
@@ -172,6 +174,7 @@ public:
         });
         global["openInfo"] = BindJSCallback(&App::openInfo);
         global["downloadInfo"] = BindJSCallback(&App::downloadInfo);
+        global["exit"] = JSCallback([](const ul::JSObject&, const ul::JSArgs&) { std::exit(0); });
 
         auto cpu = hwinfo::getAllCPUs()[0];
 
